@@ -21,12 +21,15 @@ import com.androidexperiments.meter.fonts.RobotoLightTypeface;
 public class Drawer implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+    private Sensor mLightometer;
     private Sensor mMagnetometer;
 
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
+    private float[] mLastLight = new float[3];
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
+    private boolean mLastLightSet = false;
 
     private float[] mR = new float[9];
     protected float[] mOrientation = new float[3];
@@ -60,11 +63,14 @@ public class Drawer implements SensorEventListener {
         mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mLightometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         mLastAccelerometerSet = false;
+        mLastLightSet = false;
         mLastMagnetometerSet = false;
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mLightometer, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -183,6 +189,10 @@ public class Drawer implements SensorEventListener {
             SensorManager.getOrientation(mR, mOrientation);
             /*Log.i("OrientationTestActivity", String.format("Orientation: %f, %f, %f",
                     mOrientation[0], mOrientation[1], mOrientation[2]));*/
+        }
+        if(event.sensor.getType() == Sensor.TYPE_LIGHT){
+            System.arraycopy(event.values, 0, mLastLight, 0, event.values.length);
+            mLastLightSet = true;
         }
     }
 
