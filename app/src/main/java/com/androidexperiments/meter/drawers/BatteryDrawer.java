@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.BatteryManager;
+import android.widget.Toast;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -28,7 +29,7 @@ public class BatteryDrawer extends Drawer {
 
     // Colors
     private final int color_battery_background;
-    private final int color_background_decharge;
+    private final int[] color_background_decharge = new int[4];
     private final int color_foreground_decharge;
 
     private final int color_background_charging;
@@ -38,14 +39,14 @@ public class BatteryDrawer extends Drawer {
     private final int color_foreground_critical;
 
     private Paint paint = new Paint();
-
+    private Context mContext;
     // Movement
     Vector2D pos, _pos;
     Vector2D vel;
 
     public BatteryDrawer(Context context){
         super(context);
-
+        mContext=context;
         // Register a receiver for battery state changes
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(batteryLevelReceiver, ifilter);
@@ -64,7 +65,10 @@ public class BatteryDrawer extends Drawer {
 
         // Load the colors
         color_battery_background = context.getResources().getColor(R.color.battery_background);
-        color_background_decharge = context.getResources().getColor(R.color.battery_circle_discharging_background);
+        color_background_decharge[0] = context.getResources().getColor(R.color.battery_circle_discharging_background1);
+        color_background_decharge[1] = context.getResources().getColor(R.color.battery_circle_discharging_background2);
+        color_background_decharge[2] = context.getResources().getColor(R.color.battery_circle_discharging_background3);
+        color_background_decharge[3] = context.getResources().getColor(R.color.battery_circle_discharging_background4);
         color_foreground_decharge = context.getResources().getColor(R.color.battery_circle_discharging);
 
         color_foreground_critical = context.getResources().getColor(R.color.battery_circle_critical);
@@ -171,11 +175,20 @@ public class BatteryDrawer extends Drawer {
         float _circleSize = (float) (c.getWidth()*circleSize);
 
         // Outer circle
-        int bgCircleColor = interpolateColor(color_background_decharge, color_background_charging, (float) lerp(_colorTransitionToCharged));
+        int whichColor;
+        if(lightValue <500)
+            whichColor = 0;
+        else if(lightValue>=500 && lightValue < 1000)
+            whichColor = 1;
+        else if(lightValue>=1000 && lightValue < 2000)
+            whichColor = 2;
+        else
+            whichColor = 3;
+        int bgCircleColor = interpolateColor(color_background_decharge[whichColor], color_background_charging, (float) lerp(_colorTransitionToCharged));
         bgCircleColor = interpolateColor(bgCircleColor, color_background_critical, (float) lerp(_colorTransitionToCritical));
         paint.setColor(bgCircleColor);
         c.drawCircle(x,y, _circleSize, paint);
-
+        //Toast.makeText(mContext,lightValue+" "+whichColor,Toast.LENGTH_SHORT).show();
         // Inner circle
         int fgCircleColor = interpolateColor(color_foreground_decharge, color_foreground_charging, (float) lerp(_colorTransitionToCharged));
         fgCircleColor = interpolateColor(fgCircleColor, color_foreground_critical, (float) lerp(_colorTransitionToCritical));

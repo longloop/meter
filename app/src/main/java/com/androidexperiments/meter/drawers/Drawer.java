@@ -10,6 +10,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -33,7 +34,7 @@ public class Drawer implements SensorEventListener {
 
     private float[] mR = new float[9];
     protected float[] mOrientation = new float[3];
-
+    protected int lightValue;
 
     private long prevTapTime = 0;
 
@@ -191,8 +192,10 @@ public class Drawer implements SensorEventListener {
                     mOrientation[0], mOrientation[1], mOrientation[2]));*/
         }
         if(event.sensor.getType() == Sensor.TYPE_LIGHT){
-            System.arraycopy(event.values, 0, mLastLight, 0, event.values.length);
-            mLastLightSet = true;
+            Log.e("light value :",""+event.values[0]);
+            //System.arraycopy(event.values, 0, mLastLight, 0, event.values.length);
+            //mLastLightSet = true;
+            lightValue = (int)event.values[0];
         }
     }
 

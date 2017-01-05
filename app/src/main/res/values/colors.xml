@@ -6,7 +6,10 @@
     <color name="battery_text">#4d2b7c</color>
     <color name="battery_background">#330e30</color>
     <color name="battery_circle_discharging">#e161e5</color>
-    <color name="battery_circle_discharging_background">#481c6b</color>
+    <color name="battery_circle_discharging_background1">#481c6b</color>
+    <color name="battery_circle_discharging_background2">#6c2aa2</color>
+    <color name="battery_circle_discharging_background3">#9f5dd5</color>
+    <color name="battery_circle_discharging_background4">#cfaeea</color>
     <color name="battery_circle_critical">#ef2074</color>
     <color name="battery_circle_critical_background">#7f1838</color>
     <color name="battery_circle_charging">#e7e6e8</color>
